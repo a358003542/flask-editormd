@@ -2,28 +2,39 @@
 # -*-coding:utf-8-*-
 
 
-"""Implementation of editor.md the markdown editor for Flask and Flask-WTF."""
+"""Implementation of editor.md the markdown editor for Flask."""
 
 __softname__ = 'flask_editormd'
-__version__ = '0.0.1'
+__version__ = '0.0.2'
 
 import json
 from jinja2 import Markup
 from flask import current_app
 from flask import url_for
+from flask import Blueprint
+from wtforms.validators import ValidationError
+
+editormd_object_name = 'editor'
+editormd_previewer_object_name = 'editor_previewer'
 
 
 class _editormd(object):
     """
-
     """
+    editormd_id_name = None
 
-    def add_editormd_js(self, editormd_id, **kwargs):
+    def add_editormd_js(self, editormd_id_name=None, **kwargs):
         """
-        :param editormd_id:
-        :param kwargs:
         :return:
         """
+        if editormd_id_name is None:
+            self.editormd_id_name = editormd_id_name = 'editor1'
+        else:
+            if editormd_id_name == 'editor':
+                raise ValidationError('editormd_id_name can not set to editor')
+            else:
+                self.editormd_id_name = editormd_id_name
+
         editor_kwargs = {
             'path': "{0}".format(url_for('editormd.static', filename='lib/'))
         }
@@ -31,41 +42,46 @@ class _editormd(object):
 
         editor_kwargs_str = json.dumps(editor_kwargs)
 
-        return Markup("""
-        <script type="text/javascript">
-    $(function () {{
-        var editor = editormd("{editormd_id}", {editor_kwargs_str}
-        );
-    }});
-</script>""".format(editormd_id=editormd_id,
-                    editor_kwargs_str=editor_kwargs_str))
-
-    def include_editormd(self):
-        """
-
-        :return:
-        """
-        return Markup('''
-
-<script src="https://cdn.bootcss.com/jquery/1.11.3/jquery.min.js"></script>
-
-<link rel="stylesheet"
-      href="{editormd_min_css}"/>
-<script src="{editormd_min_js}"></script>
-            '''.format(
-            editormd_min_css=url_for('editormd.static',
-                                     filename='css/editormd.min.css'),
-            editormd_min_js=url_for('editormd.static',
-                                    filename='js/editormd.min.js')
+        return Markup("""<script type="text/javascript">
+        $(function () {{
+            var {editormd_object_name} = editormd("{editormd_id_name}", {editor_kwargs_str}
+            );
+            window["{editormd_object_name}"] = {editormd_object_name};
+        }});
+    </script>""".format(
+            editor_kwargs_str=editor_kwargs_str,
+            editormd_object_name=editormd_object_name,
+            editormd_id_name=self.editormd_id_name
         ))
 
-    def assure_include_jquery(self):
-        return Markup('''
-            <script src="https://cdn.bootcss.com/jquery/1.11.3/jquery.min.js"></script>
-            ''')
+    def add_editormd_preview_js(self, editormd_id_name=None, **kwargs):
+        """
+        :return:
+        """
+        if editormd_id_name is None:
+            self.editormd_id_name = editormd_id_name = 'editor1'
+        else:
+            if editormd_id_name == 'editor':
+                raise ('editormd_id_name can not set to editor')
+            else:
+                self.editormd_id_name = editormd_id_name
 
+        editor_kwargs = {}
+        editor_kwargs.update(kwargs)
 
-from flask import Blueprint
+        editor_kwargs_str = json.dumps(editor_kwargs)
+
+        return Markup("""<script type="text/javascript">
+        $(function () {{
+            var {editormd_previewer_object_name} = editormd.markdownToHTML("{editormd_id_name}", {editor_kwargs_str}
+            );
+            window["{editormd_previewer_object_name}"] = {editormd_previewer_object_name};
+        }});
+    </script>""".format(
+            editor_kwargs_str=editor_kwargs_str,
+            editormd_previewer_object_name=editormd_previewer_object_name,
+            editormd_id_name=self.editormd_id_name
+        ))
 
 
 class Editormd(object):
@@ -83,6 +99,7 @@ class Editormd(object):
         blueprint = Blueprint(
             'editormd',
             __name__,
+            template_folder='templates',
             static_folder='static',
             static_url_path=app.static_url_path + '/editormd', )
 

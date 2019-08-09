@@ -1,0 +1,14 @@
+{% extends "editormd/preview.html" %}
+
+{% block content -%}
+{{ body() }}
+{%- endblock content %}
+
+
+{% block scripts %}
+{{ super() }}
+
+{{ editormd.add_editormd_preview_js()}}
+
+{%- endblock scripts %}
+

@@ -1,26 +1,23 @@
-<!DOCTYPE html>
-<html>
-<head>
+{% extends "editormd/editor.html" %}
+{% import "bootstrap/wtf.html" as wtf %}
 
-</head>
-<body>
+{% block content -%}
 
+<form method="POST">
+    {{ form.hidden_tag() }}
 
-<div id="editormd-1">
-    <textarea style="display:none;">### 关于 Editor.md
+    {{ form.body() }}
 
-**Editor.md** 是一款开源的、可嵌入的 Markdown 在线编辑器（组件），基于 CodeMirror、jQuery 和 Marked 构建。
-    </textarea>
-</div>
+    {{ wtf.form_field(form.submit) }}
+</form>
 
-
-{{editormd.include_editormd()}}
+{%- endblock content %}
 
 
-{{editormd.add_editormd_js("editormd-1", height="850px")}}
+{% block scripts %}
+{{ super() }}
 
+{{ editormd.add_editormd_js(autoHeight=True)}}
 
-</body>
-</html>
-
+{%- endblock scripts %}
 
