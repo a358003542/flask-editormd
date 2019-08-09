@@ -15,7 +15,7 @@ def long_description():
 
 setup(
     name='flask_editormd',
-    version='0.0.3',
+    version='0.0.4',
     description='Implementation of editor.md the markdown editor for Flask and Flask-WTF.',
     url='https://github.com/a358003542/flask-editormd',
     long_description=long_description(),

@@ -5,7 +5,7 @@
 """Implementation of editor.md the markdown editor for Flask and Flask-WTF."""
 
 __softname__ = 'flask_editormd'
-__version__ = '0.0.3'
+__version__ = '0.0.4'
 
 import json
 from jinja2 import Markup
@@ -13,17 +13,15 @@ from flask import current_app
 from flask import url_for
 from flask import Blueprint
 from wtforms.validators import ValidationError
-from queue import Queue
 
 editormd_object_name = 'editor'
+editormd_id_name = 'editor1'
 
 
 class _editormd(object):
     """
     """
     viewer_count = 0  # 默认计数器 防止重名现象
-    editor_count = 0
-    q_editormd_name = Queue()  # 编辑器的名字队列
 
     def create_default_viewer_name(self):
         """
@@ -36,27 +34,12 @@ class _editormd(object):
         self.viewer_count += 1
         return 'editormd-viewer-{0}'.format(self.viewer_count)
 
-    def put_editormd_name(self):
-        self.editor_count += 1
-        name = 'editormd-{0}'.format(self.editor_count)
-        self.q_editormd_name.put(name)
-        return name
-
-    def get_editormd_name(self):
-        self.editor_count -= 1
-        name = self.q_editormd_name.get()
-        return name
-
-    def add_editormd(self, editormd_id_name=None, **kwargs):
+    def add_editormd(self, **kwargs):
         """
         一般只有一个编辑器 多个应该也是支持的
         :return:
         """
-        if editormd_id_name is None:
-            editormd_id_name = self.get_editormd_name()
-        else:
-            if editormd_id_name == 'editor':
-                raise ValidationError('editormd_id_name can not set to editor')
+        global editormd_id_name
 
         editor_kwargs = {
             'path': "{0}".format(url_for('editormd.static', filename='lib/'))
@@ -77,15 +60,15 @@ class _editormd(object):
             editormd_id_name=editormd_id_name
         ))
 
-    def add_editormd_previewer(self, md_content, editormd_id_name=None,
+    def add_editormd_previewer(self, md_content, editormd_previewer_id=None,
                                **kwargs):
         """
         :return:
         """
-        if editormd_id_name is None:
-            editormd_id_name = self.create_default_viewer_name()
+        if editormd_previewer_id is None:
+            editormd_previewer_id = self.create_default_viewer_name()
         else:
-            if editormd_id_name == 'editor':
+            if editormd_previewer_id == 'editor':
                 raise ValidationError('editormd_id_name can not set to editor')
 
         editor_kwargs = {}
@@ -99,10 +82,10 @@ class _editormd(object):
         </div>
         
         <script type="text/javascript">
-        function whenAvailable(name, callback) {{
-            var interval = 10; // ms
+        function whenAllAvailable(names, callback) {{
+            var interval = 30; // ms
             window.setTimeout(function () {{
-                if (window[name]) {{
+                if (names.every(function(name) {{ return window[name] }}) ) {{
                     callback();
                 }} else {{
                     window.setTimeout(arguments.callee, interval);
@@ -113,10 +96,10 @@ class _editormd(object):
             var editormd_previewer = editormd.markdownToHTML("{editormd_id_name}", {editor_kwargs_str}
             );
         }};
-        whenAvailable("editormd", func);
+        whenAllAvailable(["editormd","marked"], func);
     </script>""".format(
             editor_kwargs_str=editor_kwargs_str,
-            editormd_id_name=editormd_id_name,
+            editormd_id_name=editormd_previewer_id,
             md_content=md_content
         ))
 

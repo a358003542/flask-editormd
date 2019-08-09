@@ -3,7 +3,7 @@ Implementation of editor.md the markdown editor for Flask and Flask-WTF.
 
 
 ## description
-It's combined the editor.md version `1.5.0` .
+It's combined the [editor.md](https://github.com/pandao/editor.md) version `1.5.0` .
 
 
 ## usage
