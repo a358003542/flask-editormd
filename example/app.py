@@ -28,8 +28,7 @@ def index():
 
 @app.route('/preview', methods=['GET', 'POST'])
 def preview():
-
-    body= """
+    content = """
     ###科学公式 TeX(KaTeX)
                     
 $$E=mc^2$$
@@ -48,7 +47,7 @@ $$X^2 > Y$$
 
 下标：O&lt;sub&gt;2&lt;/sub&gt;
 """
-    return render_template('preview.html', body=body)
+    return render_template('preview.html', content=content)
 
 
 if __name__ == '__main__':

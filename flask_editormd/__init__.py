@@ -47,7 +47,7 @@ class _editormd(object):
         name = self.q_editormd_name.get()
         return name
 
-    def add_editormd_js(self, editormd_id_name=None, **kwargs):
+    def add_editormd(self, editormd_id_name=None, **kwargs):
         """
         一般只有一个编辑器 多个应该也是支持的
         :return:

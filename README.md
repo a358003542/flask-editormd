@@ -37,7 +37,7 @@ the editormd object is auto inject to the jinja2 template.
 {% block scripts %}
 {{ super() }}
 
-{{ editormd.add_editormd_js(autoHeight=True)}}
+{{ editormd.add_editormd(autoHeight=True)}}
 
 {%- endblock scripts %}
 ```
@@ -75,23 +75,16 @@ def index():
 {% extends "editormd/preview.html" %}
 
 {% block content -%}
-{{ body() }}
+
+{{ editormd.add_editormd_previewer(cotnent) }}
+
 {%- endblock content %}
-
-
-{% block scripts %}
-{{ super() }}
-
-{{ editormd.add_editormd_preview_js()}}
-
-{%- endblock scripts %}
 
 ```
 
 ```python
 from flask import Flask, render_template
 from flask_editormd import Editormd
-from flask_editormd.fields import EditormdPreviewerField
 from flask_bootstrap import Bootstrap
 
 app = Flask(__name__)
@@ -101,8 +94,7 @@ Bootstrap(app)
 
 @app.route('/preview', methods=['GET', 'POST'])
 def preview():
-    body = EditormdPreviewerField()
-    body.data = """
+    content = """
     ###科学公式 TeX(KaTeX)
                     
 $$E=mc^2$$
@@ -121,5 +113,5 @@ $$X^2 > Y$$
 
 下标：O&lt;sub&gt;2&lt;/sub&gt;
 """
-    return render_template('preview.html', body=body)
+    return render_template('preview.html', content=content)
 ```
