@@ -2,7 +2,7 @@ from flask import Flask, render_template
 from flask_wtf import FlaskForm
 from flask_editormd import Editormd
 from flask_bootstrap import Bootstrap
-from flask_editormd.fields import EditormdField, EditormdPreviewerField
+from flask_editormd.fields import EditormdField
 from wtforms.fields import SubmitField
 
 app = Flask(__name__)
@@ -28,8 +28,8 @@ def index():
 
 @app.route('/preview', methods=['GET', 'POST'])
 def preview():
-    body = EditormdPreviewerField()
-    body.data = """
+
+    body= """
     ###科学公式 TeX(KaTeX)
                     
 $$E=mc^2$$
