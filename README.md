@@ -18,7 +18,7 @@ the editormd object is auto inject to the jinja2 template.
 
 ### Editor
 ```jinja2
-{% extends "editormd/editor.html" %}
+{% extends "bootstrap/base.html" %}
 {% import "bootstrap/wtf.html" as wtf %}
 
 {% block content -%}

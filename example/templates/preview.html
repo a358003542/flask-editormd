@@ -1,4 +1,4 @@
-{% extends "editormd/preview.html" %}
+{% extends "bootstrap/base.html" %}
 
 {% block content -%}
 
@@ -6,4 +6,11 @@
 
 
 {%- endblock content %}
+
+
+{% block scripts %}
+{{ super() }}
+{{ editormd.add_editormd_previewer_resource() }}
+
+{%- endblock scripts %}
 
