@@ -37,7 +37,8 @@ the editormd object is auto inject to the jinja2 template.
 {% block scripts %}
 {{ super() }}
 
-{{ editormd.add_editormd(autoHeight=True)}}
+{{ editormd.add_editormd_resource(autoLoadModules=False) }}
+{{ editormd.add_editormd(autoHeight=True, autoLoadModules=False)}}
 
 {%- endblock scripts %}
 ```
@@ -72,13 +73,21 @@ def index():
 
 ### Preview
 ```jinja2
-{% extends "editormd/preview.html" %}
+{% extends "bootstrap/base.html" %}
 
 {% block content -%}
 
-{{ editormd.add_editormd_previewer(cotnent) }}
+{{ editormd.add_editormd_previewer(content) }}
+
 
 {%- endblock content %}
+
+
+{% block scripts %}
+{{ super() }}
+{{ editormd.add_editormd_previewer_resource() }}
+
+{%- endblock scripts %}
 
 ```
 

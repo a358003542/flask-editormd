@@ -22,7 +22,7 @@ Editor
 ~~~~~~~~~
 ::
 
-    {% extends "editormd/editor.html" %}
+    {% extends "bootstrap/base.html" %}
     {% import "bootstrap/wtf.html" as wtf %}
 
     {% block content -%}
@@ -41,10 +41,10 @@ Editor
     {% block scripts %}
     {{ super() }}
 
-    {{ editormd.add_editormd(autoHeight=True)}}
+    {{ editormd.add_editormd_resource(autoLoadModules=False) }}
+    {{ editormd.add_editormd(autoHeight=True, autoLoadModules=False)}}
 
     {%- endblock scripts %}
-
 
 ::
 
@@ -79,13 +79,21 @@ Preview
 ~~~~~~~~~
 ::
 
-    {% extends "editormd/preview.html" %}
+    {% extends "bootstrap/base.html" %}
 
     {% block content -%}
 
-    {{ editormd.add_editormd_previewer(cotnent) }}
+    {{ editormd.add_editormd_previewer(content) }}
+
 
     {%- endblock content %}
+
+
+    {% block scripts %}
+    {{ super() }}
+    {{ editormd.add_editormd_previewer_resource() }}
+
+    {%- endblock scripts %}
 
 
 ::
