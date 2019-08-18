@@ -5,7 +5,7 @@
 """Implementation of editor.md the markdown editor for Flask and Flask-WTF."""
 
 __softname__ = 'flask_editormd'
-__version__ = '0.0.6'
+__version__ = '0.0.7'
 
 import logging
 import json
@@ -133,8 +133,8 @@ class _editormd(object):
         return 'editormd-viewer-{0}'.format(self.viewer_count)
 
     def add_editormd_resource(self, autoLoadModules=True,
-                            previewCodeHighlight=True, flowchart=False,
-                            tex=False):
+                              previewCodeHighlight=True, flowchart=False,
+                              tex=False):
         """
         one page add one function
         :return:
@@ -186,7 +186,8 @@ class _editormd(object):
 
         return origin_markup
 
-    def add_editormd(self, editor_id=default_editor_id, **kwargs):
+    def add_editormd(self, editor_id=default_editor_id, autoLoadPlugins=False,
+                     **kwargs):
         """
         you can add more than one editor
         可能执行多次 添加多个编辑器
@@ -194,6 +195,11 @@ class _editormd(object):
         """
         autoLoadModules = kwargs.get('autoLoadModules', True)
         editor_kwargs = {}
+
+        if autoLoadPlugins:
+            editor_kwargs['pluginPath'] = str(
+                url_for('editormd.static', filename='plugins/')
+            )
 
         if autoLoadModules:
             editor_kwargs['path'] = "{0}".format(
@@ -242,7 +248,7 @@ class _editormd(object):
         return origin_markup
 
     def add_editormd_previewer(self, md_content, previewer_id=None,
-                      **kwargs):
+                               **kwargs):
         """
         you may add more than one editormd previewer
         可添加多个previewer
